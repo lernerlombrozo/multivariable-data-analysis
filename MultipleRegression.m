@@ -1,0 +1,19 @@
+x1 = [-1; -0.75; -0.5; -0.25; 0; 0.25; 0.5; 0.75; 1];
+n = length(x1);
+y= [-1.9029; -0.2984; 0.4047; 0.5572; 0.9662; 2.0312; 3.2286; 5.722; 10.0952];
+k=input('k?');
+x=[];
+for v = 0:1:k-1
+   x= [x x1.^v];
+end
+xt=transpose(x);
+teta=(xt*x)^(-1)*xt*y;
+xbar=mean(x1);
+ybar=mean(y);
+ycalc=x*teta;
+SSR=sum((ycalc-ybar).^2);
+SSE=sum((y-ycalc).^2);
+SSTO=sum((y-ybar).^2);
+R2=SSR/SSTO;
+R2adj=1-((1-R2)*(n-1)/(n-k));
+result= [transpose(teta) R2 R2adj]
