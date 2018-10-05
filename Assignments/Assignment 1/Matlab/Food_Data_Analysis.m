@@ -82,6 +82,9 @@ F_x1x2 = mvnpdf([X1(:) X2(:)],X_pair_mean, X_pair_cov);
 F_x1x2 = reshape(F_x1x2,length(x2),length(x1));
 
 figure;
+surf(X1,X2);
+
+figure;
 surf(x1,x2,F_x1x2);
 xlabel('x1'); ylabel('x2'); zlabel('Probability Density');
 title(sprintf('Bivariate distribution of [x1 x2] with mu=[%4.2f %4.2f] and sigma=[%4.2f %4.2f;%4.2f %4.2f]',X_pair_mean(1),X_pair_mean(2),X_pair_cov(1,1),X_pair_cov(1,2),X_pair_cov(2,1),X_pair_cov(2,2)));%}

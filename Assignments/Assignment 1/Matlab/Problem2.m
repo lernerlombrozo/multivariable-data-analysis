@@ -1,33 +1,32 @@
 % * Needs to be manually modiffied if you add a new variable
 % **  Wont display all data if you add a new variable
-clear
-clc
+clear; clc;
 %reading file
 filename = 'FoodData.csv'; %FoodData.csv must be in same folder as Problem2.m
 Y = csvread(filename,1,1);
 
 %Taking the desired columns
-X = [Y(:,2),Y(:,4),Y(:,6)] % *
-[N, m]= size(X);
+X = [Y(:,2),Y(:,4),Y(:,6)]; % *
+[sampleN, samples]= size(X);
 
 %X = [ 1 2 -1; 2 4 -2; 3 6 -3] %Uncomment for testing a humanly understandable
 %distribution
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% Part A: Statistics %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 disp('Sample mean; mu');
-mu=transpose(mean(X))
+XMean=transpose(mean(X))
 
 disp('Sample variance; Z');
-sigma=cov(X)
-[m,n]= size(sigma); %we will use this for 2d and 3d plots
+XVariance=cov(X)
+[m,n]= size(XVariance); %we will use this for 2d and 3d plots
 
 disp('Sample correlation: r');
-r=corr(X)
+Xr=corr(X)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% Part A: Plots %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %2D scatter plots 
 figure;
-t=0
+t=0;
 for i = 1:1:m % horizontal rule
     for j = 1:1:n %vertical rule
         t=t+1;
@@ -48,32 +47,43 @@ title('3D-trivariate scatter plot');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% Part B:  Expression for the confidence ellipse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 syms X1 X2 X3; % *
 Xtest= [X1; X2; X3]; % *
-transpose(Xtest-mu)*inv(sigma)*(Xtest-mu)%obtaining numerical expression for the confidence ellipse
+disp('numerical expression for the confidence ellipse');
+sampleN*transpose(Xtest-XMean)*inv(XVariance)*(Xtest-XMean)
 alpha=0.1;
+disp(strcat('Chi^2(',num2str(samples),') (',num2str(alpha),')'));
 chi2= chi2inv(1-alpha,m)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% Part B:  Axis lengths %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-[V,D,W]= eig(sigma)
+[V,D,W]= eig(XVariance);
+disp('eigenVectors');
+W
+disp('eigenValues');
+D
+disp('50% length across eigenVectors');
 (D*chi2).^(1/2)
+disp('100% length across eigenVectors');
+(D*chi2).^(1/2)*2
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% Part C:  Hipothesis testing %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+xTest=[8; 17; 31];
 alpha=0.8;
-chi2= chi2inv(1-alpha,m);
-F = finv(1-alpha,m,N);
-x=[8; 17; 31]
-N*transpose(x-mu)*inv(sigma)*(x-mu)
+disp(strcat('F(',num2str(samples),', ',num2str(sampleN),'-',num2str(samples),')(',num2str(alpha),')'));
+F = finv(1-alpha,m,sampleN)
+disp('n (x-mu)^T Z^1 (x-M)');
+FTest= sampleN*transpose(xTest-XMean)*inv(XVariance)*(xTest-XMean)
+if FTest <= F
+    disp('Reject H0 in favour of Ha');
+else
+    disp('Fail to reject H0 in favour of Ha');
+end
 
 %Bonferroni testing:
-filename = 'FoodData.csv'; %FoodData.csv must be in same folder as Problem2.m
-Y = csvread(filename,1,1);
-X = [Y(:,2),Y(:,4),Y(:,6)]; % *
-mu=transpose(mean(X));
-cov=cov(X);
-[n,p] = size(X);
-var=transpose(dot(cov,eye(p)));
+var=transpose(dot(XVariance,eye(samples)));
 alpha = .05;
-C2=p*(n-1)/(n-p)*finv(1-alpha,p,(n-p));
-a=mu+(var*C2/n).^(1/2)
-b=mu-(var*C2/n).^(1/2)
+C2=samples*(sampleN-1)/(sampleN-samples)*finv(1-alpha,samples,(sampleN-samples));
+disp('Minor limits');
+XMean-(var*C2/sampleN).^(1/2)
+disp('Major limits');
+XMean+(var*C2/sampleN).^(1/2)
 
 
