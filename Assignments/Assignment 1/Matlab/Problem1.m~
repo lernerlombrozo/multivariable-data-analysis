@@ -1,0 +1,18 @@
+%{
+sigma = [1 1 1;1 3 2;1 2 2]
+chi2= chi2inv(.90,3)
+[V,D,W]= eig(sigma)
+(D*chi2).^(1/2)
+%}
+
+filename = 'FoodData.csv'; %FoodData.csv must be in same folder as Problem2.m
+Y = csvread(filename,1,1);
+
+%Taking the desired columns
+X = [Y(:,2),Y(:,4),Y(:,6)]; % *
+mu=transpose(mean(X));
+sigma=cov(X)
+[n,p] = size(X);
+alpha = .05;
+C2=p*(n-1)/(n-p)*finv(1-alpha,p,(n-p));
+leftHandSide=mu-sqrt(C2*/)
