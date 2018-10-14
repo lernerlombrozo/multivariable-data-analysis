@@ -77,13 +77,20 @@ else
     disp('Fail to reject H0 in favour of Ha');
 end
 
-%Bonferroni testing:
+%Individual testing:
 var=transpose(dot(XVariance,eye(samples)));
 alpha = .05;
+t2=tinv((1-alpha/2),sampleN-1)
+disp('Individual Minor limits');
+XMean-sqrt(var/sampleN)*t2
+disp('Individual Major limits');
+XMean+sqrt(var/sampleN)*t2
+
+%Bonferroni testing:
 C2=samples*(sampleN-1)/(sampleN-samples)*finv(1-alpha,samples,(sampleN-samples));
-disp('Minor limits');
+disp('Bonferroni Minor limits');
 XMean-(var*C2/sampleN).^(1/2)
-disp('Major limits');
+disp('Bonferroni Major limits');
 XMean+(var*C2/sampleN).^(1/2)
 
 
