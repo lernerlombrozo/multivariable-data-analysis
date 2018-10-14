@@ -16,5 +16,4 @@ X = [ones(n,1) x];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% Part B: Principal Component Analysis %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 [coeff,score,latent,tsquared,explained,mu] = pca(x);
-xCov=cov(X);
-
+xVariance=cov(X)
